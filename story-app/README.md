@@ -1,102 +1,149 @@
-# Story Hack
+# Story Protocol IP Registration API
 
-Story Protocol을 활용한 스토리 NFT 생성 및 관리 애플리케이션
+This repository contains a backend API server built with Express.js and TypeScript for registering intellectual property (IP) assets using Story Protocol's SDK.
 
-## 기능
+## Features
 
-- 스토리 NFT 생성 및 관리
-- IPFS에 스토리 콘텐츠 저장
-- Story Protocol 통합
-- 로깅 및 모니터링
+- Register IP assets with files (images, videos, etc.)
+- Generate NFTs for IP assets
+- Upload content to IPFS using Pinata
+- Register existing NFTs as IP assets
+- Swagger documentation
 
-## 시작하기
+## Prerequisites
 
-### 필수 조건
+- Node.js (v18 or higher)
+- npm or yarn
+- Pinata account (for IPFS storage)
+- A wallet with Story Protocol testnet tokens
 
-- Node.js 18 이상
-- npm 또는 yarn
-- Story Protocol API 키
-- IPFS 프로젝트 ID 및 시크릿
+## Getting Started
 
-### 설치
+### Clone the Repository
 
-1. 저장소 클론
 ```bash
-git clone [repository-url]
-cd story-hack
+git clone https://github.com/yourusername/story-hack.git
+cd story-hack/story-app
 ```
 
-2. 의존성 설치
+### Install Dependencies
+
 ```bash
 npm install
 ```
 
-3. 환경 변수 설정
+### Configure Environment Variables
+
+1. Create a `.env` file by copying the example file:
+
 ```bash
 cp .env.example .env
-# .env 파일을 편집하여 필요한 값 설정
 ```
 
-4. 애플리케이션 실행
+2. Edit the `.env` file and fill in the required values:
+
+```
+# Server Configuration
+PORT=3000
+NODE_ENV=development
+
+# Story Protocol Configuration
+RPC_PROVIDER_URL=https://aeneid.storyrpc.io
+SPG_NFT_CONTRACT_ADDRESS=0xc32A8a0FF3beDDDa58393d022aF433e78739FAbc
+WALLET_PRIVATE_KEY=your_wallet_private_key_here
+BLOCK_EXPLORER_URL=https://aeneid.storyscan.io/tx/
+
+# Pinata Configuration
+PINATA_API_KEY=your_pinata_api_key_here
+PINATA_API_SECRET=your_pinata_secret_key_here
+PINATA_JWT=your_pinata_jwt_token_here
+```
+
+> **Important**: You need to get Story Protocol testnet tokens from [https://cloud.google.com/application/web3/faucet/story/aeneid](https://cloud.google.com/application/web3/faucet/story/aeneid)
+
+### Build the Project
+
+```bash
+npm run build
+```
+
+### Run the Server
+
+#### Development Mode
+
+This will start the server with hot reloading:
+
+```bash
+npm run dev
+```
+
+#### Production Mode
+
 ```bash
 npm start
 ```
 
-## 개발
+The server will start on the port defined in your `.env` file (default: 3000).
 
-### 스크립트
-
-- `npm start`: 애플리케이션 시작
-- `npm run dev`: 개발 모드로 실행
-- `npm test`: 테스트 실행
-- `npm run build`: 프로덕션 빌드
-- `npm run lint`: 코드 린트 검사
-
-### 디렉토리 구조
-
+You should see output similar to:
 ```
-story-app/
-├── src/
-│   ├── config/         # 설정 파일
-│   ├── controllers/    # 컨트롤러
-│   ├── models/         # 데이터 모델
-│   ├── routes/         # API 라우트
-│   ├── services/       # 비즈니스 로직
-│   ├── utils/          # 유틸리티 함수
-│   └── app.ts          # 애플리케이션 진입점
-├── .env.example        # 환경 변수 예제
-├── .gitignore         # Git 무시 파일
-├── package.json        # 프로젝트 설정
-└── README.md           # 프로젝트 문서
+info: Server is running at http://localhost:3000
+info: Swagger documentation available at http://localhost:3000/api-docs
 ```
 
-## API 문서
+## API Documentation
 
-### 스토리 생성
+Once the server is running, you can access the Swagger documentation at:
 
-```http
-POST /api/stories
-Content-Type: application/json
-
-{
-  "title": "스토리 제목",
-  "content": "스토리 내용",
-  "author": "작가 주소"
-}
+```
+http://localhost:3000/api-docs
 ```
 
-### 스토리 조회
+This provides a UI to interact with all available API endpoints.
 
-```http
-GET /api/stories/:id
+## Available Endpoints
+
+- `POST /api/v1/ip/register` - Register a new IP asset with a file
+- `POST /api/v1/ip/register-existing-nft` - Register an existing NFT as an IP asset
+
+## Testing
+
+### Test IPFS Upload
+
+```bash
+npm run test:ipfs
 ```
 
-### 스토리 목록 조회
+### Test IP Registration
 
-```http
-GET /api/stories
+```bash
+npm run test:ip
 ```
 
-## 라이센스
+## Deployment
 
-MIT 
+### Deploy to Vercel
+
+```bash
+npm run deploy
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **FUNCTION_INVOCATION_FAILED (500 error)**:
+   - Check if all environment variables are properly set in Vercel
+   - Ensure the PINATA_JWT is valid and not expired
+   - Verify wallet has enough tokens for transactions
+
+2. **CORS errors**:
+   - If deploying on Vercel, check vercel.json configuration
+
+3. **File Upload Issues**:
+   - Ensure you're using multipart/form-data for file uploads
+   - The field name for the file must be 'file'
+
+## License
+
+This project is licensed under the ISC License.
