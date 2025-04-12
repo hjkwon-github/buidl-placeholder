@@ -35,13 +35,13 @@ async function testStoryProtocol() {
   logger.info('Story Protocol 서비스 테스트 시작');
 
   try {
-    // 1. Story 서비스 초기화
+    // 1. IPFS 서비스 초기화 (싱글톤 인스턴스 사용)
+    const ipfsService = IPFSService.getInstance(logger);
+    logger.info('IPFS 서비스 초기화 완료');
+
+    // 2. Story 서비스 초기화 (자동으로 싱글톤 IPFSService 사용)
     const storyService = new StoryService(logger);
     logger.info('Story 서비스 초기화 완료');
-
-    // 2. IPFS 서비스 초기화
-    const ipfsService = new IPFSService(logger);
-    logger.info('IPFS 서비스 초기화 완료');
 
     // 3. 샘플 이미지 IPFS에 업로드 
     const testImageUrl = 'https://picsum.photos/200';

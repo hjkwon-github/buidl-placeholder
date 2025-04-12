@@ -4,6 +4,7 @@ import { StoryClient, StoryConfig, IpMetadata, IpCreator } from '@story-protocol
 import { http, type Address } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { Logger } from './logger.service';
+import { IPFSService } from './ipfs.service';
 import { StoryProtocolError } from '../types/errors';
 import { Validator } from '../utils/validator';
 import { 
@@ -22,6 +23,7 @@ import {
 export class StoryService {
   private client!: StoryClient;
   private logger: Logger;
+  private ipfsService: IPFSService;
 
   /**
    * Story Protocol 서비스 생성자
@@ -29,6 +31,7 @@ export class StoryService {
    */
   constructor(logger: Logger) {
     this.logger = logger;
+    this.ipfsService = IPFSService.getInstance(logger);
     this.initStoryClient();
   }
 

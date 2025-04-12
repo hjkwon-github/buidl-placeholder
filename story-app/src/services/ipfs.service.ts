@@ -6,9 +6,10 @@ import { StoryProtocolError } from '../types/errors';
 import { IPFSUploadResult } from '../types/ip.types';
 
 /**
- * IPFS 서비스 클래스
+ * IPFS 서비스 클래스 (싱글톤 패턴)
  */
 export class IPFSService {
+  private static instance: IPFSService | null = null;
   private pinata: PinataSDK;
   private logger: Logger;
 
@@ -16,12 +17,31 @@ export class IPFSService {
    * IPFS 서비스 생성자
    * @param logger 로거 인스턴스
    */
-  constructor(logger: Logger) {
+  private constructor(logger: Logger) {
     this.logger = logger;
     this.pinata = new PinataSDK({
       pinataJwt: process.env.PINATA_JWT,
     });
-    this.logger.info('IPFS 서비스 초기화 완료');
+    this.logger.info('IPFS service initialized');
+  }
+
+  /**
+   * IPFSService 인스턴스 반환 (싱글톤 패턴)
+   * @param logger 로거 인스턴스
+   * @returns IPFSService 인스턴스
+   */
+  public static getInstance(logger: Logger): IPFSService {
+    if (!IPFSService.instance) {
+      IPFSService.instance = new IPFSService(logger);
+    }
+    return IPFSService.instance;
+  }
+
+  /**
+   * 테스트용 인스턴스 초기화 메서드
+   */
+  public static resetInstance(): void {
+    IPFSService.instance = null;
   }
 
   /**
