@@ -13,7 +13,7 @@ Content-Type: {{contentType}}
 {
     "title": "Test IP Asset",
     "description": "This is a test for registering IP using Story Protocol SDK.",
-    "fileUrl": "https://picsum.photos/300",
+    "fileUrl": "https://picsum.photos/200",
     "creators": [
         {
             "name": "Test User",

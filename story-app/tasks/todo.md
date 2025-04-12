@@ -93,3 +93,31 @@
   - [x] IP 자산 조회 테스트 케이스 작성
   - [x] IPFS 메타데이터 조회 테스트 케이스 작성
   - [x] 에러 케이스 테스트 작성
+
+## 12. API 문서화 (Swagger UI)
+- [ ] Swagger 설정
+  - [ ] `src/config/swagger.ts` 생성
+  - [ ] Swagger 기본 설정 구성
+  - [ ] API 문서 메타데이터 설정
+  - [ ] Swagger UI 미들웨어 설정
+
+- [ ] API 엔드포인트 문서화
+  - [ ] `POST /api/v1/ip/register` 엔드포인트 문서화
+    - [ ] 요청 스키마 정의
+    - [ ] 응답 스키마 정의
+    - [ ] 에러 응답 정의
+  - [ ] `GET /api/v1/ip/:ipId` 엔드포인트 문서화
+    - [ ] 경로 파라미터 정의
+    - [ ] 응답 스키마 정의
+    - [ ] 에러 응답 정의
+
+- [ ] 공통 스키마 정의
+  - [ ] `RegisterIPRequest` 스키마 정의
+  - [ ] `RegisterIPResponse` 스키마 정의
+  - [ ] `StoryDetailResponse` 스키마 정의
+  - [ ] `StoryProtocolError` 스키마 정의
+
+- [ ] 테스트 및 검증
+  - [ ] Swagger UI 접근 테스트
+  - [ ] API 문서 정확성 검증
+  - [ ] 예제 요청/응답 검증
