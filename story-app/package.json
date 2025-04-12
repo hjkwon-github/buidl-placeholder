@@ -8,7 +8,8 @@
     "start": "node dist/index.js",
     "dev": "nodemon --watch src --ext ts --exec ts-node src/index.ts",
     "build": "tsc",
-    "test:ipfs": "ts-node src/tests/ipfs-upload.test.ts"
+    "test:ipfs": "ts-node src/tests/ipfs-upload.test.ts",
+    "test:story:register": "ts-node src/tests/story-register.test.ts"
   },
   "keywords": [],
   "author": "",
