@@ -1,0 +1,7 @@
+{
+    "python.defaultInterpreterPath": "/opt/homebrew/Caskroom/miniconda/base/envs/story-hack/bin/python",
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}",
+        "${workspaceFolder}/story-search-tool"
+    ]
+}

@@ -1,0 +1,62 @@
+# 환경 변수 파일
+.env
+
+# 벡터 DB 디렉토리
+/db/
+
+# Python 캐시 파일
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 가상 환경
+.venv
+venv/
+ENV/
+
+# Poetry
+.poetry/
+
+# 로그 파일
+*.log
+
+# 임시 파일
+*.swp
+*.swo
+.DS_Store
+
+# PyCharm 폴더
+.idea/
+
+# VS Code 설정
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# 배포 / 패키징
+dist/
+build/
+*.egg-info/
+
+# mypy 캐시
+.mypy_cache/
+
+# pytest 캐시
+.pytest_cache/
+
+# 커버리지 리포트
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+coverage.xml
+*.cover
+.hypothesis/ 
+
+# IDE
+.vscode/
+.idea/
+.cursor/
