@@ -1,0 +1,42 @@
+# Environment Variables
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### Check Server Status
+GET {{baseUrl}}
+
+### Register IP Request
+# @name registerIP
+POST {{baseUrl}}/api/v1/ip/register
+Content-Type: {{contentType}}
+
+{
+    "title": "Test IP Asset",
+    "description": "This is a test for registering IP using Story Protocol SDK.",
+    "fileUrl": "https://picsum.photos/300",
+    "creators": [
+        {
+            "name": "Test User",
+            "address": "0xCaa2da8aF50327B31FC5Ee19472E883D830B9c4B",
+            "contributionPercent": 100
+        }
+    ],
+    "licenseTerms": {
+        "commercialUse": true,
+        "royaltyPercentage": 5
+    }
+}
+
+### Register Existing NFT IP Request
+# @name registerExistingNft
+POST {{baseUrl}}/api/v1/ip/register-existing-nft
+Content-Type: {{contentType}}
+
+{
+    "nftContract": "0xc32A8a0FF3beDDDa58393d022aF433e78739FAbc",
+    "tokenId": "1",
+    "ipMetadataURI": "https://ipfs.io/ipfs/bafkreia6ranlsdj4n2kaglfot6fqvh4p4fo4dcrng2fuyugohgj2uowcsq",
+    "ipMetadataHash": "0x1e881ab90d3c6e94032cae9f8b0a9f8fe15dc18a2d368b4c50ce3993aa3ac294",
+    "nftMetadataURI": "https://ipfs.io/ipfs/bafkreiehfooree4viiq4kz3zgakzfnrzps7sfkxejdv4p55xxyvvvqpsxm",
+    "nftMetadataHash": "0x872b9d1213954221c56779301592b6397cbf22aae448ebc7f7b7be2b5ac1f2bb"
+} 

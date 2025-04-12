@@ -2,56 +2,63 @@ import dotenv from 'dotenv';
 import { IPFSService } from '../services/ipfs.service';
 import { Logger } from '../services/logger.service';
 
+// Load environment variables
 dotenv.config();
 
-async function testIPFSUpload() {
-  // 로거 초기화
+/**
+ * IPFS Upload Test
+ */
+async function testIpfsUpload() {
+  // Initialize logger
   const logger = new Logger();
-  logger.info('IPFS 업로드 테스트 시작');
-
-  // IPFS 서비스 초기화
-  const ipfsService = new IPFSService(logger);
+  logger.info('Starting IPFS upload test');
 
   try {
-    // 샘플 이미지 URL (테스트용)
-    const testImageUrl = 'https://picsum.photos/200';
-    
-    // 파일 업로드 테스트
-    logger.info('이미지 파일 업로드 테스트');
-    const contentResult = await ipfsService.uploadContent(testImageUrl);
-    logger.info('이미지 업로드 결과', contentResult);
-    
-    // 메타데이터 업로드 테스트
-    logger.info('JSON 메타데이터 업로드 테스트');
+    // Initialize IPFS service using singleton pattern
+    const ipfsService = IPFSService.getInstance(logger);
+    logger.info('IPFS service initialized');
+
+    // Test image upload
+    const imageUrl = 'https://picsum.photos/200';
+    logger.info('Uploading test image to IPFS', { imageUrl });
+
+    const imageUploadResult = await ipfsService.uploadContent(imageUrl);
+    logger.info('Image upload completed', { result: imageUploadResult });
+
+    console.log('\n===== Image Upload Result =====');
+    console.log('CID:', imageUploadResult.ipfsCid);
+    console.log('URL:', `https://ipfs.io/ipfs/${imageUploadResult.ipfsCid}`);
+    console.log('================================\n');
+
+    // Test metadata upload
     const metadata = {
-      title: '테스트 이미지',
-      description: 'IPFS 업로드 테스트를 위한 이미지입니다.',
-      image: `ipfs://${contentResult.ipfsCid}`,
+      name: 'Test Asset',
+      description: 'This is a test asset for IPFS upload.',
+      image: `ipfs://${imageUploadResult.ipfsCid}`,
       attributes: [
         {
-          trait_type: 'Category',
-          value: 'Test'
+          trait_type: 'Test',
+          value: 'Value'
         }
       ]
     };
-    
-    const jsonResult = await ipfsService.uploadJSON(metadata);
-    logger.info('메타데이터 업로드 결과', jsonResult);
-    
-    // 결과 출력
-    console.log('\n========== IPFS 업로드 테스트 결과 ==========');
-    console.log(`이미지 IPFS CID: ${contentResult.ipfsCid}`);
-    console.log(`이미지 URL: https://ipfs.io/ipfs/${contentResult.ipfsCid}`);
-    console.log(`메타데이터 IPFS CID: ${jsonResult.ipfsCid}`);
-    console.log(`메타데이터 URL: https://ipfs.io/ipfs/${jsonResult.ipfsCid}`);
-    console.log('===============================================\n');
-    
-    logger.info('IPFS 업로드 테스트 완료');
+
+    logger.info('Uploading metadata to IPFS', { metadata });
+
+    const metadataUploadResult = await ipfsService.uploadJSON(metadata);
+    logger.info('Metadata upload completed', { result: metadataUploadResult });
+
+    console.log('\n===== Metadata Upload Result =====');
+    console.log('CID:', metadataUploadResult.ipfsCid);
+    console.log('URL:', `https://ipfs.io/ipfs/${metadataUploadResult.ipfsCid}`);
+    console.log('==================================\n');
+
+    logger.info('IPFS upload test completed');
   } catch (error) {
-    logger.error('IPFS 업로드 테스트 실패', { error });
-    console.error('테스트 중 오류가 발생했습니다:', error);
+    logger.error('IPFS upload test failed', { error });
+    console.error('An error occurred during testing:', error);
   }
 }
 
-// 테스트 실행
-testIPFSUpload().catch(console.error); 
+// Run test
+testIpfsUpload().catch(console.error);

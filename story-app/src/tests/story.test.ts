@@ -1,4 +1,3 @@
-// @ts-ignore - 타입 문제 무시 (SDK와 타입 호환성 문제)
 import dotenv from 'dotenv';
 import { StoryService } from '../services/story.service';
 import { Logger } from '../services/logger.service';
@@ -8,79 +7,79 @@ import { type Address, isAddress } from 'viem';
 import { Validator } from '../utils/validator';
 import { HashOrAddress, MintAndRegisterIpParams } from '../types/story.types';
 
-// 환경 변수 로드
+// Load environment variables
 dotenv.config();
 
 /**
- * 이더리움 주소 형식으로 변환 및 유효성 검증
- * @param address 주소 문자열
- * @returns 0x로 시작하는 이더리움 주소
+ * Convert and validate to Ethereum address format
+ * @param address Address string
+ * @returns Ethereum address starting with 0x
  */
 function formatAddress(address: string): Address {
   const formattedAddress = address.startsWith('0x') ? address : `0x${address}`;
   
   if (!Validator.isValidEthereumAddress(formattedAddress)) {
-    throw new Error(`유효하지 않은 이더리움 주소: ${formattedAddress}`);
+    throw new Error(`Invalid Ethereum address: ${formattedAddress}`);
   }
   
   return formattedAddress as Address;
 }
 
 /**
- * Story Protocol 서비스 테스트
+ * Story Protocol Service Test
  */
 async function testStoryProtocol() {
-  // 로거 초기화
+  // Initialize logger
   const logger = new Logger();
-  logger.info('Story Protocol 서비스 테스트 시작');
+  logger.info('Starting Story Protocol service test');
 
   try {
-    // 1. IPFS 서비스 초기화 (싱글톤 인스턴스 사용)
+    // 1. Initialize IPFS service (using singleton instance)
     const ipfsService = IPFSService.getInstance(logger);
-    logger.info('IPFS 서비스 초기화 완료');
+    logger.info('IPFS service initialization completed');
 
-    // 2. Story 서비스 초기화 (자동으로 싱글톤 IPFSService 사용)
+    // 2. Initialize Story service (automatically using singleton IPFSService)
     const storyService = new StoryService(logger);
-    logger.info('Story 서비스 초기화 완료');
+    logger.info('Story service initialization completed');
 
-    // 3. 샘플 이미지 IPFS에 업로드 
+    // 3. Upload sample image to IPFS
     const testImageUrl = 'https://picsum.photos/200';
     const contentResult = await ipfsService.uploadContent(testImageUrl);
-    logger.info('이미지 업로드 결과', contentResult);
+    logger.info('Image upload result', contentResult);
 
-    // 주소 유효성 검증
+    // Validate address
     const creatorAddress = formatAddress('0xCaa2da8aF50327B31FC5Ee19472E883D830B9c4B');
-    logger.info('크리에이터 주소 검증 완료', { address: creatorAddress });
+    logger.info('Creator address validation completed', { address: creatorAddress });
     
-    // 콘텐츠 해시값 저장 (이더리움 주소로 사용하지 않음)
+    // Store content hash (not used as Ethereum address)
     const imageContentHash = contentResult.contentHash || '';
     
-    // 가상 주소 (실제 테스트에서만 사용) - 여기서는 creator 주소를 재사용
+    // Virtual address (used only in testing) - reusing creator address here
     const dummyAddress = creatorAddress;
 
-    // 4. IP 메타데이터 생성
+    // 4. Generate IP metadata
     const ipMetadata = storyService.generateIpMetadata({
-      title: 'Story Protocol 테스트 이미지',
-      description: 'Story Protocol SDK를 테스트하기 위한 이미지입니다.',
+      title: 'Story Protocol Test Image',
+      description: 'This is an image for testing Story Protocol SDK.',
       image: `https://ipfs.io/ipfs/${contentResult.ipfsCid}`,
-      imageHash: dummyAddress.toString(), // 가상 주소 사용
+      imageHash: dummyAddress.toString(), // Using virtual address
       mediaUrl: `https://ipfs.io/ipfs/${contentResult.ipfsCid}`,
-      mediaHash: dummyAddress.toString(), // 가상 주소 사용
+      mediaHash: dummyAddress.toString(), // Using virtual address
       mediaType: contentResult.contentType || 'image/jpeg',
       creators: [
         {
-          name: '테스트 사용자',
+          name: 'Test User',
           address: creatorAddress.toString(),
           contributionPercent: 100,
         },
       ],
     });
-    logger.info('IP 메타데이터 생성 완료', { metadata: ipMetadata });
+    logger.info('IP metadata generation completed', { metadata: ipMetadata });
 
-    // 5. NFT 메타데이터 생성
+    // 5. Generate NFT metadata
     const nftMetadata = {
-      name: 'Story Protocol 테스트 NFT',
-      description: 'Story Protocol SDK를 테스트하기 위한 NFT입니다.',
+      name: 'Story Protocol Test NFT',
+      description: 'This is an NFT for testing Story Protocol SDK.',
       image: `https://ipfs.io/ipfs/${contentResult.ipfsCid}`,
       attributes: [
         {
@@ -93,41 +92,41 @@ async function testStoryProtocol() {
         },
       ],
     };
-    logger.info('NFT 메타데이터 생성 완료');
+    logger.info('NFT metadata generation completed');
 
-    // 6. 메타데이터 IPFS에 업로드
+    // 6. Upload metadata to IPFS
     const ipIpfsResult = await ipfsService.uploadJSON(ipMetadata);
     const ipHash = ipIpfsResult.hash || '0x' + createHash('sha256').update(JSON.stringify(ipMetadata)).digest('hex');
     
     const nftIpfsResult = await ipfsService.uploadJSON(nftMetadata);
     const nftHash = nftIpfsResult.hash || '0x' + createHash('sha256').update(JSON.stringify(nftMetadata)).digest('hex');
     
-    logger.info('메타데이터 업로드 완료', {
+    logger.info('Metadata upload completed', {
       ipIpfsCid: ipIpfsResult.ipfsCid,
       nftIpfsCid: nftIpfsResult.ipfsCid
     });
 
-    // 7. 등록 정보 출력 및 실제 등록 실행
-    console.log('\n===== Story Protocol 등록 정보 =====');
-    console.log(`IP 메타데이터 IPFS CID: ${ipIpfsResult.ipfsCid}`);
-    console.log(`IP 메타데이터 URL: https://ipfs.io/ipfs/${ipIpfsResult.ipfsCid}`);
-    console.log(`NFT 메타데이터 IPFS CID: ${nftIpfsResult.ipfsCid}`);
-    console.log(`NFT 메타데이터 URL: https://ipfs.io/ipfs/${nftIpfsResult.ipfsCid}`);
+    // 7. Print registration info and execute actual registration
+    console.log('\n===== Story Protocol Registration Info =====');
+    console.log(`IP Metadata IPFS CID: ${ipIpfsResult.ipfsCid}`);
+    console.log(`IP Metadata URL: https://ipfs.io/ipfs/${ipIpfsResult.ipfsCid}`);
+    console.log(`NFT Metadata IPFS CID: ${nftIpfsResult.ipfsCid}`);
+    console.log(`NFT Metadata URL: https://ipfs.io/ipfs/${nftIpfsResult.ipfsCid}`);
     
-    // 실제 등록 수행
+    // Execute actual registration
     if (process.env.WALLET_PRIVATE_KEY) {
-      logger.info('Story Protocol에 IP 등록 시작');
+      logger.info('Starting IP registration with Story Protocol');
       
-      // bytes32 해시 생성 - Validator 사용
+      // Generate bytes32 hash - Using Validator
       const ipMetadataBytes32Hash = Validator.generateBytes32Hash(JSON.stringify(ipMetadata));
       const nftMetadataBytes32Hash = Validator.generateBytes32Hash(JSON.stringify(nftMetadata));
       
-      // 해시 형식 검증
+      // Validate hash format
       if (!Validator.isValidBytes32Hash(ipMetadataBytes32Hash) || !Validator.isValidBytes32Hash(nftMetadataBytes32Hash)) {
-        throw new Error('유효하지 않은 해시 형식입니다. 32바이트 해시가 필요합니다.');
+        throw new Error('Invalid hash format. 32-byte hash required.');
       }
       
-      // 타입 호환성을 위해 타입 단언 사용
+      // Using type assertion for type compatibility
       const registerParams = {
         ipMetadataURI: `https://ipfs.io/ipfs/${ipIpfsResult.ipfsCid}`,
         ipMetadataHash: ipMetadataBytes32Hash as HashOrAddress,
@@ -135,24 +134,24 @@ async function testStoryProtocol() {
         nftMetadataHash: nftMetadataBytes32Hash as HashOrAddress,
       } as MintAndRegisterIpParams;
       
-      console.log('\n등록 파라미터:', registerParams);
+      console.log('\nRegistration parameters:', registerParams);
       
       const registerResult = await storyService.mintAndRegisterIp(registerParams);
-      logger.info('IP 등록 결과', registerResult);
+      logger.info('IP registration result', registerResult);
       
-      console.log('\n===== 등록 결과 =====');
+      console.log('\n===== Registration Result =====');
       console.log(`IP ID: ${registerResult.ipId}`);
-      console.log(`트랜잭션 해시: ${registerResult.txHash}`);
-      console.log(`StoryScan 주소: ${registerResult.viewUrl || `https://aeneid.storyscan.io/tx/${registerResult.txHash}`}`);
+      console.log(`Transaction Hash: ${registerResult.txHash}`);
+      console.log(`StoryScan URL: ${registerResult.viewUrl || `https://aeneid.storyscan.io/tx/${registerResult.txHash}`}`);
       console.log('=====================\n');
     } else {
-      console.log('\n실제 등록을 수행하려면 WALLET_PRIVATE_KEY 환경 변수를 설정하세요.');
+      console.log('\nSet WALLET_PRIVATE_KEY environment variable to perform actual registration.');
       
-      // bytes32 해시 생성 - Validator 사용
+      // Generate bytes32 hash - Using Validator
       const ipMetadataBytes32Hash = Validator.generateBytes32Hash(JSON.stringify(ipMetadata));
       const nftMetadataBytes32Hash = Validator.generateBytes32Hash(JSON.stringify(nftMetadata));
       
-      console.log('등록에 필요한 파라미터:', {
+      console.log('Required parameters for registration:', {
         ipMetadataURI: `https://ipfs.io/ipfs/${ipIpfsResult.ipfsCid}`,
         ipMetadataHash: ipMetadataBytes32Hash as HashOrAddress,
         nftMetadataURI: `https://ipfs.io/ipfs/${nftIpfsResult.ipfsCid}`,
@@ -160,12 +159,12 @@ async function testStoryProtocol() {
       } as MintAndRegisterIpParams);
     }
     
-    logger.info('Story Protocol 테스트 완료');
+    logger.info('Story Protocol test completed');
   } catch (error) {
-    logger.error('Story Protocol 테스트 실패', { error });
-    console.error('테스트 중 오류가 발생했습니다:', error);
+    logger.error('Story Protocol test failed', { error });
+    console.error('An error occurred during testing:', error);
   }
 }
 
-// 테스트 실행
+// Run test
 testStoryProtocol().catch(console.error); 
