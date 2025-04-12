@@ -101,6 +101,24 @@ http://localhost:3000/api-docs
 
 This provides a UI to interact with all available API endpoints.
 
+## Live Demo and Testing
+
+A version with all environment variables configured is deployed at:
+
+```
+https://story-app-dusky.vercel.app
+```
+
+You can test the API without any local setup using curl commands:
+
+### Register a new IP asset with a file
+
+```bash
+curl -X POST -F "file=@/path/to/your/image.jpg" https://story-app-dusky.vercel.app/api/v1/ip/register
+```
+
+Replace `/path/to/your/image.jpg` with the path to your local file.
+
 ## Available Endpoints
 
 - `POST /api/v1/ip/register` - Register a new IP asset with a file
