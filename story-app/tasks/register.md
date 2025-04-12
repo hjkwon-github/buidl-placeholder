@@ -30,11 +30,12 @@
   - [x] `uploadJSON`: 메타데이터 업로드 메서드 구현
   - [x] 에러 처리 로직 구현
 
-## 5. Story Protocol 서비스 구현
-- [ ] `src/services/story.service.ts` 구현
-  - [ ] Story Protocol SDK 초기화
-  - [ ] `registerIp`: IP 등록 메서드 구현
-  - [ ] 트랜잭션 처리 및 에러 핸들링
+## 5. Story Protocol 서비스 구현 ✅
+- [x] `src/services/story.service.ts` 구현
+  - [x] Story Protocol SDK 초기화
+  - [x] `registerIp`: IP 등록 메서드 구현
+  - [x] 트랜잭션 처리 및 에러 핸들링
+  - [x] 타입스크립트 린트 오류 수정
 
 ## 6. 컨트롤러 구현
 - [ ] `src/controllers/ip.controller.ts` 구현
@@ -60,10 +61,13 @@
   - [ ] IP 등록 라우트 설정
   - [ ] 미들웨어 연결
 
-## 10. 테스트
+## 10. 테스트 ✅
 - [x] IPFS 업로드 테스트 구현
-  - [x] `src/test-ipfs-upload.ts` 생성
-  - [ ] IP 등록 테스트 케이스 작성
+  - [x] `tests/ipfs-upload.test.ts` 생성
+  - [x] IP 등록 테스트 케이스 작성
+- [x] Story Protocol 테스트 구현
+  - [x] `tests/story.test.ts` 생성
+  - [x] 메타데이터 생성 및 등록 테스트
 
 ## 11. 문서화
 - [ ] API 스펙 문서 업데이트
