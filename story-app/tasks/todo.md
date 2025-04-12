@@ -69,7 +69,27 @@
   - [x] `tests/story.test.ts` 생성
   - [x] 메타데이터 생성 및 등록 테스트
 
-## 11. 문서화
-- [ ] API 스펙 문서 업데이트
-- [ ] 환경 설정 가이드 작성
-- [ ] 테스트 방법 문서화
+## 11. IP 자산 상세 조회 기능 구현
+- [x] `src/services/story.service.ts` 확장
+  - [x] `getStoryDetail` 메서드 구현
+  - [x] Story Protocol SDK IP 자산 조회 로직 구현
+  - [x] IPFS 메타데이터 조회 로직 구현
+  - [x] 응답 데이터 가공 로직 구현
+  - [x] 에러 처리 로직 구현
+
+- [x] `src/controllers/ip.controller.ts` 확장
+  - [x] `getStoryDetail` 컨트롤러 메서드 구현
+  - [x] 요청 파라미터 검증 로직 구현
+  - [x] 응답 포맷팅 로직 구현
+
+- [x] `src/routes/ip.routes.ts` 확장
+  - [x] `GET /api/v1/ip/:ipId` 엔드포인트 추가
+  - [x] 라우트 핸들러 구현
+  - [x] 에러 미들웨어 연결
+
+- [x] 테스트 구현
+  - [x] `src/tests/story-detail.test.ts` 구현
+  - [x] `src/tests/story-detail.test.http` 구현
+  - [x] IP 자산 조회 테스트 케이스 작성
+  - [x] IPFS 메타데이터 조회 테스트 케이스 작성
+  - [x] 에러 케이스 테스트 작성
