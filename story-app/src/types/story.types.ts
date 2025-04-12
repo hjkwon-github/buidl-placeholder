@@ -117,4 +117,25 @@ export interface MintAndRegisterIpParams {
  * IP 메타데이터 파라미터에 사용되는 주소 타입
  * SDK에서는 0x로 시작하는 문자열 타입을 요구함
  */
-export type HashOrAddress = `0x${string}`; 
+export type HashOrAddress = `0x${string}`;
+
+/**
+ * IP 자산 상세 정보 인터페이스
+ */
+export interface IpAssetDetail {
+  ipId: string;
+  owner: string;
+  status: string;
+  registrationDate: string | null;
+  nftContract: string;
+  tokenId: string;
+  ipMetadataURI: string;
+  nftMetadataURI: string;
+  ipMetadata: any;   // IPFS에서 가져온 IP 메타데이터
+  nftMetadata: any;  // IPFS에서 가져온 NFT 메타데이터
+  mediaUrl: string | null;
+  title: string;
+  description: string;
+  creator: string;
+  viewUrl: string;
+} 

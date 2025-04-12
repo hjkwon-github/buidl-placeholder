@@ -63,4 +63,28 @@ export interface IPFSUploadResult {
   contentType?: string;
   contentHash?: string;
   hash?: string;
+}
+
+/**
+ * IP 자산 상세 응답 인터페이스
+ */
+export interface StoryDetailResponse {
+  status: 'success' | 'error';
+  data: {
+    ipId: string;
+    owner: string;
+    status: string;
+    registrationDate: string | null;
+    nftContract: string;
+    tokenId: string;
+    mediaUrl: string | null;
+    title: string;
+    description: string;
+    creator: string;
+    viewUrl: string;
+    metadata: {
+      ip: any;
+      nft: any;
+    };
+  };
 } 
