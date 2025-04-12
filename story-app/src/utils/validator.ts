@@ -1,5 +1,6 @@
 import { RegisterIPRequest } from '../types/ip.types';
 import { StoryProtocolError } from '../types/errors';
+import { isAddress } from 'viem';
 
 /**
  * 요청 유효성 검증 유틸리티
@@ -91,6 +92,40 @@ export class Validator {
    * @returns 유효 여부
    */
   static isValidEthereumAddress(address: string): boolean {
-    return /^0x[a-fA-F0-9]{40}$/.test(address);
+    // 기본 정규식 검증: 0x로 시작하는 40자리 16진수 문자열
+    const basicCheck = /^0x[a-fA-F0-9]{40}$/.test(address);
+    
+    const viemCheck = isAddress(address);
+    return basicCheck && viemCheck;
+  }
+  
+  /**
+   * bytes32 해시 유효성 검증
+   * @param hash 검증할 해시 값
+   * @returns 유효 여부
+   */
+  static isValidBytes32Hash(hash: string): boolean {
+    // bytes32 해시는 0x로 시작하는 64자리 16진수 문자열
+    return /^0x[a-fA-F0-9]{64}$/.test(hash);
+  }
+  
+  /**
+   * 32바이트 해시 생성
+   * @param input 해시 생성 대상 문자열
+   * @returns 32바이트 해시
+   */
+  static generateBytes32Hash(input: string): string {
+    const crypto = require('crypto');
+    return '0x' + crypto.createHash('sha256').update(input).digest('hex');
+  }
+  
+  /**
+   * 이더리움 주소 또는 해시 형식 검증 (유연한 검증)
+   * @param value 검증할 문자열
+   * @returns 유효 여부
+   */
+  static isValidAddressOrHash(value: string): boolean {
+    // 0x로 시작하고 최소 40자 이상의 16진수 문자열
+    return /^0x[a-fA-F0-9]{40,}$/.test(value);
   }
 } 
