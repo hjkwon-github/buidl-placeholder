@@ -17,14 +17,4 @@ router.get('/:id', (req, res) => {
   res.json({ message: `Get Story Detail: ${req.params.id}` });
 });
 
-// Update Story
-router.put('/:id', (req, res) => {
-  res.json({ message: `Update Story: ${req.params.id}` });
-});
-
-// Delete Story
-router.delete('/:id', (req, res) => {
-  res.json({ message: `Delete Story: ${req.params.id}` });
-});
-
 export { router as storyRouter }; 
