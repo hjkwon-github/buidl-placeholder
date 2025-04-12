@@ -6,9 +6,16 @@ import { RegisterIPRequest, RegisterIPResponse, StoryDetailResponse } from '../t
 import { HashOrAddress } from '../types/story.types';
 import { StoryProtocolError } from '../types/errors';
 import { Validator } from '../utils/validator';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
 
 // Create logger instance
 const logger = new Logger();
+
+// 블록 익스플로러 URL 환경 변수에서 가져오기
+const BLOCK_EXPLORER_URL = process.env.BLOCK_EXPLORER_URL || 'https://aeneid.explorer.story.xyz/tx/';
 
 /**
  * IP Controller Class
@@ -23,6 +30,13 @@ export class IpController {
   constructor() {
     this.storyService = new StoryService(logger);
     this.ipfsService = IPFSService.getInstance(logger);
+  }
+
+  /**
+   * 트랜잭션 익스플로러 URL 생성
+   */
+  private getTransactionUrl(transactionHash: string): string {
+    return `${BLOCK_EXPLORER_URL}${transactionHash}`;
   }
 
   /**
@@ -127,6 +141,7 @@ export class IpController {
         status: 'success',
         ipId: registerResult.ipId,
         transactionHash: registerResult.txHash,
+        transactionUrl: this.getTransactionUrl(registerResult.txHash),
         ipfsData: {
           mediaUrl: `https://ipfs.io/ipfs/${contentResult.ipfsCid}`,
           metadataUrl: `https://ipfs.io/ipfs/${ipIpfsResult.ipfsCid}`
@@ -187,6 +202,7 @@ export class IpController {
         status: 'success',
         ipId: result.ipId,
         transactionHash: result.txHash,
+        transactionUrl: this.getTransactionUrl(result.txHash),
         ipfsData: {
           mediaUrl: nftMetadataURI,
           metadataUrl: ipMetadataURI
@@ -246,6 +262,8 @@ export class IpController {
           description: ipAssetDetail.description,
           creator: ipAssetDetail.creator,
           viewUrl: ipAssetDetail.viewUrl,
+          transactionHash: ipAssetDetail.transactionHash,
+          transactionUrl: ipAssetDetail.transactionHash ? this.getTransactionUrl(ipAssetDetail.transactionHash) : undefined,
           // Include metadata based on requirements
           metadata: {
             ip: ipAssetDetail.ipMetadata,

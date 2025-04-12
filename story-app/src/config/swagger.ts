@@ -160,46 +160,129 @@ const getSwaggerOptions = (serverUrl: string): swaggerJsdoc.Options => ({
         RegisterIPResponse: {
           type: 'object',
           properties: {
+            status: {
+              type: 'string',
+              description: 'Status of the request',
+              enum: ['success', 'error'],
+            },
             ipId: {
               type: 'string',
               description: 'Unique identifier of the registered IP asset',
             },
-            metadataUrl: {
-              type: 'string',
-              description: 'URL of the IP asset metadata on IPFS',
-            },
             transactionHash: {
               type: 'string',
               description: 'Transaction hash of the IP registration',
+            },
+            transactionUrl: {
+              type: 'string',
+              description: 'URL to view the transaction on the block explorer',
+              format: 'uri',
+            },
+            ipfsData: {
+              type: 'object',
+              properties: {
+                mediaUrl: {
+                  type: 'string',
+                  description: 'URL of the IP asset media on IPFS',
+                  format: 'uri',
+                },
+                metadataUrl: {
+                  type: 'string',
+                  description: 'URL of the IP asset metadata on IPFS',
+                  format: 'uri',
+                },
+              },
+            },
+            errorCode: {
+              type: 'string',
+              description: 'Error code when status is error',
+            },
+            errorMessage: {
+              type: 'string',
+              description: 'Error message when status is error',
             },
           },
         },
         StoryDetailResponse: {
           type: 'object',
           properties: {
-            ipId: {
+            status: {
               type: 'string',
-              description: 'Unique identifier of the IP asset',
+              description: 'Status of the request',
+              enum: ['success', 'error'],
             },
-            title: {
-              type: 'string',
-              description: 'Title of the IP asset',
-            },
-            description: {
-              type: 'string',
-              description: 'Description of the IP asset',
-            },
-            contentUrl: {
-              type: 'string',
-              description: 'URL of the IP asset content',
-            },
-            metadataUrl: {
-              type: 'string',
-              description: 'URL of the IP asset metadata on IPFS',
-            },
-            owner: {
-              type: 'string',
-              description: 'Address of the IP asset owner',
+            data: {
+              type: 'object',
+              properties: {
+                ipId: {
+                  type: 'string',
+                  description: 'Unique identifier of the IP asset',
+                },
+                owner: {
+                  type: 'string',
+                  description: 'Address of the IP asset owner',
+                },
+                status: {
+                  type: 'string',
+                  description: 'Status of the IP asset',
+                },
+                registrationDate: {
+                  type: 'string',
+                  description: 'Date of registration of the IP asset',
+                  nullable: true,
+                },
+                nftContract: {
+                  type: 'string',
+                  description: 'Address of the NFT contract',
+                },
+                tokenId: {
+                  type: 'string',
+                  description: 'ID of the NFT token',
+                },
+                mediaUrl: {
+                  type: 'string',
+                  description: 'URL of the IP asset media',
+                  nullable: true,
+                },
+                title: {
+                  type: 'string',
+                  description: 'Title of the IP asset',
+                },
+                description: {
+                  type: 'string',
+                  description: 'Description of the IP asset',
+                },
+                creator: {
+                  type: 'string',
+                  description: 'Address of the IP asset creator',
+                },
+                viewUrl: {
+                  type: 'string',
+                  description: 'URL to view the IP asset',
+                },
+                transactionHash: {
+                  type: 'string',
+                  description: 'Transaction hash of the IP registration',
+                },
+                transactionUrl: {
+                  type: 'string',
+                  description: 'URL to view the transaction on the block explorer',
+                  format: 'uri',
+                },
+                metadata: {
+                  type: 'object',
+                  properties: {
+                    ip: {
+                      type: 'object',
+                      description: 'IP metadata',
+                    },
+                    nft: {
+                      type: 'object',
+                      description: 'NFT metadata',
+                    },
+                  },
+                },
+              },
             },
           },
         },

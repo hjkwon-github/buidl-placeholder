@@ -46,6 +46,7 @@ export interface RegisterIPResponse {
   status: "success" | "error";
   ipId?: string;
   transactionHash?: string;
+  transactionUrl?: string;  // 블록 익스플로러 트랜잭션 URL
   ipfsData?: {
     mediaUrl: string;
     metadataUrl: string;
@@ -82,6 +83,8 @@ export interface StoryDetailResponse {
     description: string;
     creator: string;
     viewUrl: string;
+    transactionHash?: string;
+    transactionUrl?: string;  // 블록 익스플로러 트랜잭션 URL
     metadata: {
       ip: any;
       nft: any;

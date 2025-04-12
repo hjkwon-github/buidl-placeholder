@@ -138,4 +138,5 @@ export interface IpAssetDetail {
   description: string;
   creator: string;
   viewUrl: string;
+  transactionHash?: string; // 트랜잭션 해시
 } 
