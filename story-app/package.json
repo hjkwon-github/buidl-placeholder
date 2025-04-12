@@ -1,10 +1,9 @@
 {
   "name": "story-app",
   "version": "1.0.0",
-  "description": "Story Protocol을 활용한 스토리 NFT 생성 및 관리 애플리케이션",
+  "description": "Application for creating and managing Story NFTs using Story Protocol",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/index.js",
     "dev": "nodemon --watch src --ext ts --exec ts-node src/index.ts",
     "build": "tsc",
