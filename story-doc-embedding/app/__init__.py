@@ -1,1 +1,0 @@
-"""Story Protocol 문서 검색 시스템"""
