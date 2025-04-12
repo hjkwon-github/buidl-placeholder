@@ -66,12 +66,12 @@ export class StoryService {
       };
 
       this.client = StoryClient.newClient(config);
-      this.logger.info('Story Protocol 클라이언트 초기화 완료');
+      this.logger.info('Story Protocol client initialization completed');
     } catch (error) {
-      this.logger.error('Story Protocol 클라이언트 초기화 실패', { error });
+      this.logger.error('Story Protocol client initialization failed', { error });
       throw new StoryProtocolError({
         code: 'STORY_CLIENT_INIT_FAILED',
-        message: 'Story Protocol 클라이언트 초기화에 실패했습니다',
+        message: 'Story Protocol client initialization failed',
         cause: error as Error,
       });
     }
@@ -147,13 +147,13 @@ export class StoryService {
         mediaType: params.mediaType,
       });
 
-      this.logger.debug('IP 메타데이터 생성 완료', { title: data.title });
+      this.logger.debug('IP metadata generation completed', { title: data.title });
       return ipMetadata;
     } catch (error) {
-      this.logger.error('IP 메타데이터 생성 실패', { error });
+      this.logger.error('IP metadata generation failed', { error });
       throw new StoryProtocolError({
         code: 'IP_METADATA_GENERATION_FAILED',
-        message: 'IP 메타데이터 생성에 실패했습니다',
+        message: 'IP metadata generation failed',
         cause: error as Error,
       });
     }
@@ -166,7 +166,7 @@ export class StoryService {
    */
   public async mintAndRegisterIp(params: MintAndRegisterIpParams): Promise<IpRegistrationResult> {
     try {
-      this.logger.info('IP 민팅 및 등록 시작');
+      this.logger.info('IP minting and registration started');
       
       // 클라이언트가 초기화되지 않은 경우 초기화
       if (!this.client) {
@@ -200,7 +200,7 @@ export class StoryService {
         txOptions: { waitForTransaction: true },
       });
       
-      this.logger.info('IP 민팅 및 등록 완료', { 
+      this.logger.info('IP minting and registration completed', { 
         ipId: response.ipId, 
         txHash: response.txHash 
       });
@@ -208,7 +208,7 @@ export class StoryService {
       if (!response.ipId || !response.txHash) {
         throw new StoryProtocolError({
           code: 'INVALID_IP_REGISTRATION_RESPONSE',
-          message: 'IP 등록 결과가 유효하지 않습니다',
+          message: 'Invalid IP registration response',
           cause: new Error('Invalid IP registration response'),
         });
       }
@@ -220,10 +220,10 @@ export class StoryService {
         viewUrl: `https://aeneid.storyscan.io/tx/${response.txHash}`,
       };
     } catch (error) {
-      this.logger.error('IP 민팅 및 등록 실패', { error });
+      this.logger.error('IP minting and registration failed', { error });
       throw new StoryProtocolError({
         code: 'STORY_REGISTER_FAILED',
-        message: 'Story Protocol IP 등록에 실패했습니다',
+        message: 'Story Protocol IP registration failed',
         cause: error as Error,
       });
     }
@@ -243,7 +243,7 @@ export class StoryService {
     nftMetadataHash: string;
   }): Promise<IpRegistrationResult> {
     try {
-      this.logger.info('기존 NFT의 IP 등록 시작', {
+      this.logger.info('IP registration for existing NFT started', {
         nftContract: params.nftContract,
         tokenId: params.tokenId
       });
@@ -269,7 +269,7 @@ export class StoryService {
         txOptions: { waitForTransaction: true },
       });
 
-      this.logger.info('기존 NFT의 IP 등록 완료', { 
+      this.logger.info('IP registration for existing NFT completed', { 
         ipId: response.ipId, 
         txHash: response.txHash 
       });
@@ -277,7 +277,7 @@ export class StoryService {
       if (!response.ipId || !response.txHash) {
         throw new StoryProtocolError({
           code: 'INVALID_IP_REGISTRATION_RESPONSE',
-          message: 'IP 등록 결과가 유효하지 않습니다',
+          message: 'Invalid IP registration response',
           cause: new Error('Invalid IP registration response'),
         });
       }
@@ -288,10 +288,10 @@ export class StoryService {
         viewUrl: `https://aeneid.explorer.story.foundation/ipa/${response.ipId}`
       };
     } catch (error) {
-      this.logger.error('기존 NFT의 IP 등록 실패', { error });
+      this.logger.error('IP registration for existing NFT failed', { error });
       throw new StoryProtocolError({
         code: 'STORY_REGISTER_EXISTING_NFT_FAILED',
-        message: '기존 NFT의 Story Protocol IP 등록에 실패했습니다',
+        message: 'IP registration for existing NFT failed',
         cause: error as Error,
       });
     }
@@ -304,13 +304,13 @@ export class StoryService {
    */
   async getIpInfo(ipId: string) {
     try {
-      this.logger.debug('IP 정보 조회 시작', { ipId });
+      this.logger.debug('IP info retrieval started', { ipId });
       
       // 주의: 아래 코드는 현재 Story Protocol SDK 버전과 맞지 않을 수 있습니다.
       // 정확한 API 호출 방법은 최신 SDK 문서를 참조해야 합니다.
       // 현재는 더미 데이터를 반환합니다.
       
-      this.logger.warn('getIpInfo 메서드가 완전히 구현되지 않았습니다. SDK 문서를 확인하세요.');
+      this.logger.warn('getIpInfo method is not fully implemented. Please refer to the latest SDK documentation.');
       
       // 실제 API 구현 시 아래 주석을 해제하고 올바른 메서드로 대체해야 합니다.
       // const ipInfo = await this.client.ipAsset.적절한메서드({
@@ -325,14 +325,14 @@ export class StoryService {
         createdAt: new Date().toISOString(),
       };
       
-      this.logger.debug('IP 정보 조회 완료', { ipId });
+      this.logger.debug('IP info retrieval completed', { ipId });
       
       return dummyIpInfo;
     } catch (error) {
-      this.logger.error('IP 정보 조회 실패', { error, ipId });
+      this.logger.error('IP info retrieval failed', { error, ipId });
       throw new StoryProtocolError({
         code: 'STORY_GET_IP_INFO_FAILED',
-        message: 'IP 정보 조회에 실패했습니다',
+        message: 'IP info retrieval failed',
         cause: error as Error,
       });
     }
