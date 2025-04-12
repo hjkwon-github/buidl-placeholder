@@ -86,3 +86,12 @@ export const registerExistingNftSchema = Joi.object({
     .required().message('NFT metadata hash is required')
     .pattern(/^(0x)?[0-9a-fA-F]{64}$/).message('Invalid NFT metadata hash format')
 });
+
+/**
+ * IP ID 검증 스키마
+ */
+export const ipIdSchema = Joi.object({
+  ipId: Joi.string()
+    .required().message('IP ID is required')
+    .pattern(/^IP-0x[0-9a-fA-F]+$/).message('Invalid IP ID format. Must start with IP-0x followed by hexadecimal characters')
+});
