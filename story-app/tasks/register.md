@@ -8,27 +8,27 @@
   - [x] `SPG_NFT_CONTRACT_ADDRESS`: Story Protocol NFT 컨트랙트 주소 (기본값: 0xc32A8a0FF3beDDDa58393d022aF433e78739FAbc)
   - [x] `PORT`: 서버 포트 (기본값: 3000)
 
-## 2. 프로젝트 구조 설정
-- [ ] 기본 디렉토리 구조 생성
-  - [ ] `src/controllers`
-  - [ ] `src/services`
-  - [ ] `src/types`
-  - [ ] `src/utils`
-  - [ ] `src/middlewares`
+## 2. 프로젝트 구조 설정 ✅
+- [x] 기본 디렉토리 구조 생성
+  - [x] `src/controllers`
+  - [x] `src/services`
+  - [x] `src/types`
+  - [x] `src/utils`
+  - [x] `src/middlewares`
 
-## 3. 타입 정의
-- [ ] `src/types/ip.types.ts` 생성
-  - [ ] `RegisterIPRequest` 인터페이스 정의
-  - [ ] `RegisterIPResponse` 인터페이스 정의
-  - [ ] `IPFSUploadResult` 인터페이스 정의
-  - [ ] `StoryProtocolError` 클래스 정의
+## 3. 타입 정의 ✅
+- [x] `src/types/ip.types.ts` 생성
+  - [x] `RegisterIPRequest` 인터페이스 정의
+  - [x] `RegisterIPResponse` 인터페이스 정의
+  - [x] `IPFSUploadResult` 인터페이스 정의
+  - [x] `StoryProtocolError` 클래스 정의
 
-## 4. IPFS 서비스 구현
-- [ ] `src/services/ipfs.service.ts` 구현
-  - [ ] Pinata SDK 초기화
-  - [ ] `uploadContent`: 파일 업로드 메서드 구현
-  - [ ] `uploadJSON`: 메타데이터 업로드 메서드 구현
-  - [ ] 에러 처리 로직 구현
+## 4. IPFS 서비스 구현 ✅
+- [x] `src/services/ipfs.service.ts` 구현
+  - [x] Pinata SDK 초기화
+  - [x] `uploadContent`: 파일 업로드 메서드 구현
+  - [x] `uploadJSON`: 메타데이터 업로드 메서드 구현
+  - [x] 에러 처리 로직 구현
 
 ## 5. Story Protocol 서비스 구현
 - [ ] `src/services/story.service.ts` 구현
@@ -50,10 +50,10 @@
   - [ ] Story Protocol 에러 처리
   - [ ] IPFS 업로드 에러 처리
 
-## 8. 유틸리티 구현
-- [ ] `src/utils/validator.ts` 구현
-  - [ ] 요청 데이터 검증 유틸리티
-  - [ ] 파일 URL 검증 유틸리티
+## 8. 유틸리티 구현 ✅
+- [x] `src/utils/validator.ts` 구현
+  - [x] 요청 데이터 검증 유틸리티
+  - [x] 파일 URL 검증 유틸리티
 
 ## 9. API 라우터 설정
 - [ ] `src/routes/ip.routes.ts` 구현
@@ -61,8 +61,8 @@
   - [ ] 미들웨어 연결
 
 ## 10. 테스트
-- [ ] REST Client 테스트 파일 작성
-  - [ ] `tests/api.http` 업데이트
+- [x] IPFS 업로드 테스트 구현
+  - [x] `src/test-ipfs-upload.ts` 생성
   - [ ] IP 등록 테스트 케이스 작성
 
 ## 11. 문서화
