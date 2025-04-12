@@ -51,7 +51,7 @@ export class IPFSService {
    */
   async uploadContent(fileUrl: string): Promise<IPFSUploadResult> {
     try {
-      this.logger.debug('컨텐츠 다운로드 중...', { url: fileUrl });
+      this.logger.debug('Downloading content...', { url: fileUrl });
       
       const response = await axios.get(fileUrl, {
         responseType: 'arraybuffer',
@@ -66,7 +66,7 @@ export class IPFSService {
       const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
       const file = new File([buffer], filename, { type: contentType });
       
-      this.logger.debug('IPFS에 컨텐츠 업로드 중...', { 
+      this.logger.debug('Uploading content to IPFS...', { 
         filename, 
         contentType, 
         size: buffer.length 
@@ -74,7 +74,7 @@ export class IPFSService {
       
       const result = await this.pinata.upload.file(file);
       
-      this.logger.info('IPFS 컨텐츠 업로드 성공', { ipfsCid: result.IpfsHash });
+      this.logger.info('IPFS content upload successful', { ipfsCid: result.IpfsHash });
       
       return {
         ipfsCid: result.IpfsHash,
@@ -82,10 +82,10 @@ export class IPFSService {
         contentHash,
       };
     } catch (error) {
-      this.logger.error('IPFS 컨텐츠 업로드 실패', { error });
+      this.logger.error('IPFS content upload failed', { error });
       throw new StoryProtocolError({
         code: 'IPFS_UPLOAD_FAILED',
-        message: '파일 업로드에 실패했습니다',
+        message: 'File upload failed',
         cause: error as Error,
       });
     }
@@ -98,24 +98,24 @@ export class IPFSService {
    */
   async uploadJSON(jsonData: any): Promise<IPFSUploadResult> {
     try {
-      this.logger.debug('IPFS에 JSON 업로드 중...', { data: jsonData });
+      this.logger.debug('Uploading JSON to IPFS...', { data: jsonData });
       
       const result = await this.pinata.upload.json(jsonData);
       const hash = '0x' + createHash('sha256')
         .update(JSON.stringify(jsonData))
         .digest('hex');
       
-      this.logger.info('IPFS JSON 업로드 성공', { ipfsCid: result.IpfsHash });
+      this.logger.info('IPFS JSON upload successful', { ipfsCid: result.IpfsHash });
       
       return { 
         ipfsCid: result.IpfsHash, 
         hash 
       };
     } catch (error) {
-      this.logger.error('IPFS JSON 업로드 실패', { error });
+      this.logger.error('IPFS JSON upload failed', { error });
       throw new StoryProtocolError({
         code: 'IPFS_METADATA_UPLOAD_FAILED',
-        message: '메타데이터 업로드에 실패했습니다',
+        message: 'Metadata upload failed',
         cause: error as Error,
       });
     }
