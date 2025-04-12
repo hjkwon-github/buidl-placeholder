@@ -38,18 +38,18 @@
   - [x] 타입스크립트 린트 오류 수정
 
 ## 6. 컨트롤러 구현
-- [ ] `src/controllers/ip.controller.ts` 구현
-  - [ ] `POST /api/v1/ip/register` 엔드포인트 구현
-  - [ ] 요청 데이터 검증
-  - [ ] IPFS 업로드 로직 연동
-  - [ ] Story Protocol 등록 로직 연동
-  - [ ] 응답 포맷팅
+- [x] `src/controllers/ip.controller.ts` 구현
+  - [x] `POST /api/v1/ip/register` 엔드포인트 구현
+  - [x] 요청 데이터 검증
+  - [x] IPFS 업로드 로직 연동
+  - [x] Story Protocol 등록 로직 연동
+  - [x] 응답 포맷팅
 
 ## 7. 미들웨어 구현
-- [ ] `src/middlewares/error.middleware.ts` 구현
-  - [ ] 글로벌 에러 핸들러 구현
-  - [ ] Story Protocol 에러 처리
-  - [ ] IPFS 업로드 에러 처리
+- [x] `src/middlewares/error.middleware.ts` 구현
+  - [x] 글로벌 에러 핸들러 구현
+  - [x] Story Protocol 에러 처리
+  - [x] IPFS 업로드 에러 처리
 
 ## 8. 유틸리티 구현 ✅
 - [x] `src/utils/validator.ts` 구현
@@ -57,9 +57,9 @@
   - [x] 파일 URL 검증 유틸리티
 
 ## 9. API 라우터 설정
-- [ ] `src/routes/ip.routes.ts` 구현
-  - [ ] IP 등록 라우트 설정
-  - [ ] 미들웨어 연결
+- [x] `src/routes/ip.routes.ts` 구현
+  - [x] IP 등록 라우트 설정
+  - [x] 미들웨어 연결
 
 ## 10. 테스트 ✅
 - [x] IPFS 업로드 테스트 구현
