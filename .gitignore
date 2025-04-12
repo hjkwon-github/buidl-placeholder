@@ -81,3 +81,5 @@ coverage/
 # IDE
 .cursor
 .vscode
+.cursor
+.vscode/
