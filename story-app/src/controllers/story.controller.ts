@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 export const storyController = {
-  // 스토리 생성
+  // The createStory function is used to create a new story
   createStory: async (req: Request, res: Response) => {
     try {
       // TODO: 스토리 생성 로직 구현
@@ -11,7 +11,7 @@ export const storyController = {
     }
   },
 
-  // 스토리 목록 조회
+  // The getStories function is used to retrieve a list of stories
   getStories: async (req: Request, res: Response) => {
     try {
       // TODO: 스토리 목록 조회 로직 구현
@@ -21,7 +21,7 @@ export const storyController = {
     }
   },
 
-  // 스토리 상세 조회
+  // The getStoryById function is used to retrieve a specific story by its ID
   getStoryById: async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
@@ -32,7 +32,7 @@ export const storyController = {
     }
   },
 
-  // 스토리 수정
+  // The updateStory function is used to update a specific story by its ID
   updateStory: async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
@@ -43,7 +43,7 @@ export const storyController = {
     }
   },
 
-  // 스토리 삭제
+  // The deleteStory function is used to delete a specific story by its ID
   deleteStory: async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
