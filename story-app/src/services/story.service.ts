@@ -1,6 +1,4 @@
-// @ts-ignore - 타입 문제 무시 (SDK와 타입 호환성 문제)
 import { StoryClient, StoryConfig, IpMetadata, IpCreator } from '@story-protocol/core-sdk';
-// @ts-ignore - 타입 문제 무시
 import { http, type Address } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { Logger } from './logger.service';
