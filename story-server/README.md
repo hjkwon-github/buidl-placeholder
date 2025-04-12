@@ -23,7 +23,7 @@ This repository contains a backend API server built with Express.js and TypeScri
 
 ```bash
 git clone https://github.com/yourusername/story-hack.git
-cd story-hack/story-app
+cd story-server
 ```
 
 ### Install Dependencies

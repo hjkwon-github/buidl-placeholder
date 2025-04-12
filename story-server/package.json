@@ -1,7 +1,7 @@
 {
-  "name": "story-app",
+  "name": "story-server",
   "version": "1.0.0",
-  "description": "Application for creating and managing Story NFTs using Story Protocol",
+  "description": "Server for Story Protocol to register stories (managing stories - future jobs)",
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
