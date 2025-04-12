@@ -2,23 +2,23 @@ import { Request, Response, NextFunction } from 'express';
 import { StoryService } from '../services/story.service';
 import { IPFSService } from '../services/ipfs.service';
 import { Logger } from '../services/logger.service';
-import { RegisterIPRequest, RegisterIPResponse } from '../types/ip.types';
+import { RegisterIPRequest, RegisterIPResponse, StoryDetailResponse } from '../types/ip.types';
 import { HashOrAddress } from '../types/story.types';
 import { StoryProtocolError } from '../types/errors';
 import { Validator } from '../utils/validator';
 
-// 로거 인스턴스 생성
+// Create logger instance
 const logger = new Logger();
 
 /**
- * IP 컨트롤러 클래스
+ * IP Controller Class
  */
 export class IpController {
   private storyService: StoryService;
   private ipfsService: IPFSService;
 
   /**
-   * 생성자
+   * Constructor
    */
   constructor() {
     this.storyService = new StoryService(logger);
@@ -26,28 +26,28 @@ export class IpController {
   }
 
   /**
-   * IP 등록 컨트롤러
+   * IP Registration Controller
    */
   register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      logger.info('IP 등록 요청 수신', { 
+      logger.info('IP registration request received', { 
         path: req.path, 
         method: req.method,
         contentType: req.headers['content-type']
       });
 
-      // 요청 데이터 파싱
+      // Parse request data
       const requestData: RegisterIPRequest = req.body;
       
-      // 1. 파일 업로드
-      logger.debug('컨텐츠 업로드 시작', { fileUrl: requestData.fileUrl });
+      // 1. File upload
+      logger.debug('Content upload started', { fileUrl: requestData.fileUrl });
       const contentResult = await this.ipfsService.uploadContent(requestData.fileUrl);
-      logger.info('컨텐츠 업로드 완료', { 
+      logger.info('Content upload completed', { 
         ipfsCid: contentResult.ipfsCid,
         contentType: contentResult.contentType
       });
 
-      // 2. IP 메타데이터 생성
+      // 2. Generate IP metadata
       const ipMetadata = this.storyService.generateIpMetadata({
         title: requestData.title,
         description: requestData.description,
@@ -63,7 +63,7 @@ export class IpController {
         })),
       });
       
-      // 3. NFT 메타데이터 생성
+      // 3. Generate NFT metadata
       const nftMetadata = {
         name: requestData.title,
         description: requestData.description,
@@ -78,7 +78,7 @@ export class IpController {
             value: contentResult.contentType || 'image/jpeg'
           }
         ],
-        // 라이선스 정보 추가 (있는 경우)
+        // Add license information if available
         ...requestData.licenseTerms && {
           license: {
             commercialUse: requestData.licenseTerms.commercialUse,
@@ -92,20 +92,20 @@ export class IpController {
         }
       };
 
-      // 4. 메타데이터 IPFS에 업로드
+      // 4. Upload metadata to IPFS
       const ipIpfsResult = await this.ipfsService.uploadJSON(ipMetadata);
       const nftIpfsResult = await this.ipfsService.uploadJSON(nftMetadata);
       
-      logger.info('메타데이터 업로드 완료', {
+      logger.info('Metadata upload completed', {
         ipIpfsCid: ipIpfsResult.ipfsCid,
         nftIpfsCid: nftIpfsResult.ipfsCid
       });
 
-      // 5. bytes32 해시 생성
+      // 5. Generate bytes32 hash
       const ipMetadataBytes32Hash = Validator.generateBytes32Hash(JSON.stringify(ipMetadata));
       const nftMetadataBytes32Hash = Validator.generateBytes32Hash(JSON.stringify(nftMetadata));
       
-      // 6. Story Protocol에 IP 등록
+      // 6. Register IP with Story Protocol
       const registerParams = {
         ipMetadataURI: `https://ipfs.io/ipfs/${ipIpfsResult.ipfsCid}`,
         ipMetadataHash: ipMetadataBytes32Hash as HashOrAddress,
@@ -113,16 +113,16 @@ export class IpController {
         nftMetadataHash: nftMetadataBytes32Hash as HashOrAddress,
       };
       
-      logger.debug('IP 등록 요청 준비 완료', registerParams);
+      logger.debug('IP registration request prepared', registerParams);
       
       const registerResult = await this.storyService.mintAndRegisterIp(registerParams);
       
-      logger.info('IP 등록 성공', {
+      logger.info('IP registration successful', {
         ipId: registerResult.ipId,
         txHash: registerResult.txHash
       });
 
-      // 7. 응답 생성
+      // 7. Generate response
       const response: RegisterIPResponse = {
         status: 'success',
         ipId: registerResult.ipId,
@@ -135,13 +135,13 @@ export class IpController {
       
       res.status(201).json(response);
     } catch (error) {
-      logger.error('IP 등록 실패', { error });
+      logger.error('IP registration failed', { error });
       
-      // 에러가 StoryProtocolError가 아닌 경우 변환
+      // Convert error to StoryProtocolError if not already
       if (!(error instanceof StoryProtocolError)) {
         error = new StoryProtocolError({
           code: 'IP_REGISTRATION_FAILED',
-          message: (error as Error).message || 'IP 등록에 실패했습니다',
+          message: (error as Error).message || 'IP registration failed',
           cause: error as Error
         });
       }
@@ -151,11 +151,11 @@ export class IpController {
   };
   
   /**
-   * 기존 NFT IP 등록 컨트롤러
+   * Existing NFT IP Registration Controller
    */
   registerExistingNft = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      logger.info('기존 NFT IP 등록 요청 수신', { 
+      logger.info('Existing NFT IP registration request received', { 
         path: req.path, 
         method: req.method 
       });
@@ -178,7 +178,7 @@ export class IpController {
         nftMetadataHash
       });
       
-      logger.info('기존 NFT IP 등록 성공', { 
+      logger.info('Existing NFT IP registration successful', { 
         ipId: result.ipId, 
         txHash: result.txHash 
       });
@@ -195,17 +195,89 @@ export class IpController {
       
       res.status(201).json(response);
     } catch (error) {
-      logger.error('기존 NFT IP 등록 실패', { error });
+      logger.error('Existing NFT IP registration failed', { error });
       
-      // 에러가 StoryProtocolError가 아닌 경우 변환
+      // Convert error to StoryProtocolError if not already
       if (!(error instanceof StoryProtocolError)) {
         error = new StoryProtocolError({
           code: 'IP_REGISTRATION_FAILED',
-          message: (error as Error).message || '기존 NFT IP 등록에 실패했습니다',
+          message: (error as Error).message || 'Existing NFT IP registration failed',
           cause: error as Error
         });
       }
       
+      next(error);
+    }
+  };
+
+  /**
+   * IP Asset Detail Retrieval Controller
+   */
+  getStoryDetail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      logger.info('IP asset detail retrieval request received', { 
+        path: req.path, 
+        method: req.method,
+        ipId: req.params.ipId
+      });
+      
+      const ipId = req.params.ipId;
+      
+      // Retrieve IP asset details through Story service
+      const ipAssetDetail = await this.storyService.getStoryDetail(ipId);
+      
+      logger.info('IP asset detail retrieval successful', { 
+        ipId: ipAssetDetail.ipId,
+        title: ipAssetDetail.title 
+      });
+      
+      // Generate response
+      const response: StoryDetailResponse = {
+        status: 'success',
+        data: {
+          ipId: ipAssetDetail.ipId,
+          owner: ipAssetDetail.owner,
+          status: ipAssetDetail.status,
+          registrationDate: ipAssetDetail.registrationDate,
+          nftContract: ipAssetDetail.nftContract,
+          tokenId: ipAssetDetail.tokenId,
+          mediaUrl: ipAssetDetail.mediaUrl,
+          title: ipAssetDetail.title,
+          description: ipAssetDetail.description,
+          creator: ipAssetDetail.creator,
+          viewUrl: ipAssetDetail.viewUrl,
+          // Include metadata based on requirements
+          metadata: {
+            ip: ipAssetDetail.ipMetadata,
+            nft: ipAssetDetail.nftMetadata
+          }
+        }
+      };
+      
+      res.status(200).json(response);
+    } catch (error) {
+      logger.error('IP asset detail retrieval failed', { error });
+      
+      // Convert error to StoryProtocolError if not already
+      if (!(error instanceof StoryProtocolError)) {
+        error = new StoryProtocolError({
+          code: 'STORY_DETAIL_FAILED',
+          message: (error as Error).message || 'IP asset detail retrieval failed',
+          cause: error as Error
+        });
+      }
+      
+      // Return appropriate status code for 404 errors
+      if ((error as StoryProtocolError).code === 'IP_ASSET_NOT_FOUND') {
+        res.status(404).json({
+          status: 'error',
+          message: `IP asset not found: ${req.params.ipId}`,
+          error: 'IP_ASSET_NOT_FOUND'
+        });
+        return;
+      }
+      
+      // Pass other errors to middleware
       next(error);
     }
   };
