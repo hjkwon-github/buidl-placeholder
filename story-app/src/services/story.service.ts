@@ -6,16 +6,16 @@ import { IPFSService } from './ipfs.service';
 import { StoryProtocolError } from '../types/errors';
 import { Validator } from '../utils/validator';
 import { 
-  IpRegistrationParams, 
-  ExistingNftRegistrationParams, 
-  IpMetadataParams,
   IpMetadataInput,
   IpRegistrationResult,
   MintAndRegisterIpParams,
-  IpCreatorParams,
-  IpAssetDetail
 } from '../types/story.types';
 import fetch from 'node-fetch';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const explorerUrl = process.env.EXPLORER_URL || 'https://aeneid.storyscan.io/tx/';
 
 /**
  * Story Protocol SDK 서비스 클래스
@@ -217,7 +217,7 @@ export class StoryService {
       return {
         ipId: response.ipId,
         txHash: response.txHash,
-        viewUrl: `https://aeneid.storyscan.io/tx/${response.txHash}`,
+        viewUrl: `${explorerUrl}${response.txHash}`,
       };
     } catch (error) {
       this.logger.error('IP minting and registration failed', { error });
@@ -333,143 +333,6 @@ export class StoryService {
       throw new StoryProtocolError({
         code: 'STORY_GET_IP_INFO_FAILED',
         message: 'IP info retrieval failed',
-        cause: error as Error,
-      });
-    }
-  }
-
-  /**
-   * IP 자산 상세 정보 조회
-   * @param ipId 조회할 IP ID
-   * @returns IP 자산 상세 정보
-   */
-  async getStoryDetail(ipId: string): Promise<IpAssetDetail> {
-    try {
-      this.logger.info('IP 자산 상세 정보 조회 시작', { ipId });
-      
-      // 클라이언트가 초기화되지 않은 경우 초기화
-      if (!this.client) {
-        this.initStoryClient();
-      }
-      
-      // 1. Story Protocol SDK로 IP 자산 정보 조회
-      // SDK 타입 정의를 확인한 결과 IPAssetClient에는 IP 자산 조회 메서드가 명시되어 있지 않음
-      // 대신 isRegistered 메서드를 사용하여 존재 여부 확인 후 Mock 데이터 생성
-      let ipAsset: any;
-      try {
-        // @ts-ignore - 타입 정의에 isRegistered 메서드만 존재함
-        this.logger.debug('IP 자산 존재 여부 확인', { ipId });
-        
-        // IP ID에서 주소 부분만 추출 (IP-0x... -> 0x...)
-        const ipIdAddress = ipId.startsWith('IP-') ? ipId.substring(3) : ipId;
-        
-        // IP 자산 존재 여부 확인
-        const isRegistered = await this.client.ipAsset.isRegistered(ipIdAddress as `0x${string}`);
-        
-        if (!isRegistered) {
-          throw new StoryProtocolError({
-            code: 'IP_ASSET_NOT_FOUND',
-            message: `IP 자산을 찾을 수 없습니다: ${ipId}`,
-            cause: new Error(`IP 자산이 등록되어 있지 않습니다: ${ipId}`)
-          });
-        }
-        
-        // Mock IP 자산 데이터 생성
-        ipAsset = {
-          ipId: ipId,
-          owner: { id: '0x' + Math.random().toString(16).substring(2, 42) },
-          status: 'ACTIVE',
-          registeredAt: Math.floor(Date.now() / 1000).toString(),
-          tokenContract: { id: '0x' + Math.random().toString(16).substring(2, 42) },
-          tokenId: '1',
-          ipMetadataURI: `https://ipfs.io/ipfs/Qm${Math.random().toString(36).substring(2, 15)}`,
-          nftMetadataURI: `https://ipfs.io/ipfs/Qm${Math.random().toString(36).substring(2, 15)}`
-        };
-        
-        this.logger.info('IP 자산 존재 확인 완료', { ipId, isRegistered });
-      } catch (error) {
-        if (error instanceof StoryProtocolError) {
-          throw error;
-        }
-        
-        this.logger.error('IP 자산 존재 여부 확인 실패', { error });
-        throw new StoryProtocolError({
-          code: 'IP_ASSET_RETRIEVAL_FAILED',
-          message: `IP 자산 정보 조회 실패: ${ipId}`,
-          cause: error as Error
-        });
-      }
-      
-      // 2. IPFS에서 메타데이터 조회
-      let ipMetadata = null;
-      if (ipAsset.ipMetadataURI && ipAsset.ipMetadataURI.startsWith('https://ipfs.io/ipfs/')) {
-        try {
-          const response = await fetch(ipAsset.ipMetadataURI);
-          if (response.ok) {
-            ipMetadata = await response.json();
-          }
-        } catch (error) {
-          this.logger.warn('IPFS 메타데이터 조회 실패', { 
-            uri: ipAsset.ipMetadataURI, 
-            error 
-          });
-          // 메타데이터 조회 실패시에도 전체 조회 실패로 처리하지 않음
-        }
-      }
-      
-      // 3. NFT 메타데이터 조회
-      let nftMetadata = null;
-      if (ipAsset.nftMetadataURI && ipAsset.nftMetadataURI.startsWith('https://ipfs.io/ipfs/')) {
-        try {
-          const response = await fetch(ipAsset.nftMetadataURI);
-          if (response.ok) {
-            nftMetadata = await response.json();
-          }
-        } catch (error) {
-          this.logger.warn('NFT 메타데이터 조회 실패', { 
-            uri: ipAsset.nftMetadataURI, 
-            error 
-          });
-          // 메타데이터 조회 실패시에도 전체 조회 실패로 처리하지 않음
-        }
-      }
-      
-      // 4. 결과 데이터 가공 (SDK 응답 구조에 맞게 조정)
-      // 타입 단언을 통해 메타데이터 객체 처리
-      const ipMetadataObj = ipMetadata as any || {};
-      const nftMetadataObj = nftMetadata as any || {};
-      
-      const result: IpAssetDetail = {
-        ipId: ipAsset.ipId || ipId,
-        owner: ipAsset.owner?.id || ipAsset.owner || '',
-        status: ipAsset.status || 'UNKNOWN',
-        registrationDate: ipAsset.registeredAt ? new Date(parseInt(ipAsset.registeredAt) * 1000).toISOString() : null,
-        nftContract: ipAsset.tokenContract?.id || ipAsset.tokenContract || '',
-        tokenId: ipAsset.tokenId || '0',
-        ipMetadataURI: ipAsset.ipMetadataURI || '',
-        nftMetadataURI: ipAsset.nftMetadataURI || '',
-        ipMetadata,
-        nftMetadata,
-        mediaUrl: ipMetadataObj.mediaUrl || ipMetadataObj.image || nftMetadataObj.image || null,
-        title: ipMetadataObj.title || nftMetadataObj.name || 'Untitled',
-        description: ipMetadataObj.description || nftMetadataObj.description || '',
-        creator: ipMetadataObj.creators?.[0]?.name || 'Unknown Creator',
-        viewUrl: `https://aeneid.explorer.story.foundation/ipa/${ipId}`
-      };
-      
-      this.logger.info('IP 자산 상세 정보 조회 완료', { ipId });
-      
-      return result;
-    } catch (error) {
-      this.logger.error('IP 자산 상세 정보 조회 실패', { error, ipId });
-      
-      if (error instanceof StoryProtocolError) {
-        throw error;
-      }
-      
-      throw new StoryProtocolError({
-        code: 'STORY_GET_DETAIL_FAILED',
-        message: 'IP 자산 상세 정보 조회 실패',
         cause: error as Error,
       });
     }

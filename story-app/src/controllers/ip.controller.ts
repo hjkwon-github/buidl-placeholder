@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { StoryService } from '../services/story.service';
 import { IPFSService } from '../services/ipfs.service';
 import { Logger } from '../services/logger.service';
-import { RegisterIPRequest, RegisterIPResponse, StoryDetailResponse } from '../types/ip.types';
+import { RegisterIPRequest, RegisterIPResponse } from '../types/ip.types';
 import { HashOrAddress } from '../types/story.types';
 import { StoryProtocolError } from '../types/errors';
 import { Validator } from '../utils/validator';
@@ -14,8 +14,7 @@ dotenv.config();
 // Create logger instance
 const logger = new Logger();
 
-// 블록 익스플로러 URL 환경 변수에서 가져오기
-const BLOCK_EXPLORER_URL = process.env.BLOCK_EXPLORER_URL || 'https://aeneid.explorer.story.xyz/tx/';
+const BLOCK_EXPLORER_URL = process.env.BLOCK_EXPLORER_URL || 'https://aeneid.storyscan.io/tx/';
 
 /**
  * IP Controller Class
@@ -222,80 +221,6 @@ export class IpController {
         });
       }
       
-      next(error);
-    }
-  };
-
-  /**
-   * IP Asset Detail Retrieval Controller
-   */
-  getStoryDetail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      logger.info('IP asset detail retrieval request received', { 
-        path: req.path, 
-        method: req.method,
-        ipId: req.params.ipId
-      });
-      
-      const ipId = req.params.ipId;
-      
-      // Retrieve IP asset details through Story service
-      const ipAssetDetail = await this.storyService.getStoryDetail(ipId);
-      
-      logger.info('IP asset detail retrieval successful', { 
-        ipId: ipAssetDetail.ipId,
-        title: ipAssetDetail.title 
-      });
-      
-      // Generate response
-      const response: StoryDetailResponse = {
-        status: 'success',
-        data: {
-          ipId: ipAssetDetail.ipId,
-          owner: ipAssetDetail.owner,
-          status: ipAssetDetail.status,
-          registrationDate: ipAssetDetail.registrationDate,
-          nftContract: ipAssetDetail.nftContract,
-          tokenId: ipAssetDetail.tokenId,
-          mediaUrl: ipAssetDetail.mediaUrl,
-          title: ipAssetDetail.title,
-          description: ipAssetDetail.description,
-          creator: ipAssetDetail.creator,
-          viewUrl: ipAssetDetail.viewUrl,
-          transactionHash: ipAssetDetail.transactionHash,
-          transactionUrl: ipAssetDetail.transactionHash ? this.getTransactionUrl(ipAssetDetail.transactionHash) : undefined,
-          // Include metadata based on requirements
-          metadata: {
-            ip: ipAssetDetail.ipMetadata,
-            nft: ipAssetDetail.nftMetadata
-          }
-        }
-      };
-      
-      res.status(200).json(response);
-    } catch (error) {
-      logger.error('IP asset detail retrieval failed', { error });
-      
-      // Convert error to StoryProtocolError if not already
-      if (!(error instanceof StoryProtocolError)) {
-        error = new StoryProtocolError({
-          code: 'STORY_DETAIL_FAILED',
-          message: (error as Error).message || 'IP asset detail retrieval failed',
-          cause: error as Error
-        });
-      }
-      
-      // Return appropriate status code for 404 errors
-      if ((error as StoryProtocolError).code === 'IP_ASSET_NOT_FOUND') {
-        res.status(404).json({
-          status: 'error',
-          message: `IP asset not found: ${req.params.ipId}`,
-          error: 'IP_ASSET_NOT_FOUND'
-        });
-        return;
-      }
-      
-      // Pass other errors to middleware
       next(error);
     }
   };

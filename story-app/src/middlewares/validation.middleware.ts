@@ -160,16 +160,3 @@ export const registerExistingNftSchema = Joi.object({
       'any.required': 'NFT metadata hash is required'
     })
 });
-
-/**
- * IP ID 검증 스키마
- */
-export const ipIdSchema = Joi.object({
-  ipId: Joi.string()
-    .required()
-    .pattern(/^IP-0x[0-9a-fA-F]+$/)
-    .messages({
-      'string.pattern.base': 'Invalid IP ID format. Must start with IP-0x followed by hexadecimal characters',
-      'any.required': 'IP ID is required'
-    })
-});
