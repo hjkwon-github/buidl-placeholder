@@ -1,12 +1,12 @@
 import { PinataSDK } from 'pinata-web3';
-import axios from 'axios';
+import fetch from 'node-fetch';
 import { createHash } from 'crypto';
 import { Logger } from './logger.service';
 import { StoryProtocolError } from '../types/errors';
 import { IPFSUploadResult } from '../types/ip.types';
 
 /**
- * IPFS 서비스 클래스 (싱글톤 패턴)
+ * IPFS Service Class (Singleton Pattern)
  */
 export class IPFSService {
   private static instance: IPFSService | null = null;
@@ -14,8 +14,8 @@ export class IPFSService {
   private logger: Logger;
 
   /**
-   * IPFS 서비스 생성자
-   * @param logger 로거 인스턴스
+   * IPFS Service Constructor
+   * @param logger Logger instance
    */
   private constructor(logger: Logger) {
     this.logger = logger;
@@ -26,9 +26,9 @@ export class IPFSService {
   }
 
   /**
-   * IPFSService 인스턴스 반환 (싱글톤 패턴)
-   * @param logger 로거 인스턴스
-   * @returns IPFSService 인스턴스
+   * Get IPFSService instance (Singleton Pattern)
+   * @param logger Logger instance
+   * @returns IPFSService instance
    */
   public static getInstance(logger: Logger): IPFSService {
     if (!IPFSService.instance) {
@@ -38,31 +38,31 @@ export class IPFSService {
   }
 
   /**
-   * 테스트용 인스턴스 초기화 메서드
+   * Reset instance for testing
    */
   public static resetInstance(): void {
     IPFSService.instance = null;
   }
 
   /**
-   * 컨텐츠를 IPFS에 업로드
-   * @param fileUrl 업로드할 파일 URL
-   * @returns IPFS 업로드 결과
+   * Upload content to IPFS
+   * @param fileUrl URL of the file to upload
+   * @returns IPFS upload result
    */
   async uploadContent(fileUrl: string): Promise<IPFSUploadResult> {
     try {
       this.logger.debug('Downloading content...', { url: fileUrl });
       
-      const response = await axios.get(fileUrl, {
-        responseType: 'arraybuffer',
-        validateStatus: (status) => status === 200,
-      });
+      const response = await fetch(fileUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-      const contentType = response.headers['content-type'];
-      const buffer = Buffer.from(response.data);
+      const contentType = response.headers.get('content-type') || 'application/octet-stream';
+      const buffer = Buffer.from(await response.arrayBuffer());
       const contentHash = '0x' + createHash('sha256').update(buffer).digest('hex');
       
-      // 파일명 생성
+      // Generate filename
       const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
       const file = new File([buffer], filename, { type: contentType });
       
@@ -92,9 +92,9 @@ export class IPFSService {
   }
 
   /**
-   * JSON 데이터를 IPFS에 업로드
-   * @param jsonData 업로드할 JSON 데이터
-   * @returns IPFS 업로드 결과
+   * Upload JSON data to IPFS
+   * @param jsonData JSON data to upload
+   * @returns IPFS upload result
    */
   async uploadJSON(jsonData: any): Promise<IPFSUploadResult> {
     try {
