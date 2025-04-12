@@ -54,15 +54,7 @@ router.post('/register', validateRequest(registerIpSchema), ipController.registe
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required: [nftContractAddress, tokenId]
- *             properties:
- *               nftContractAddress:
- *                 type: string
- *                 description: Address of the NFT contract
- *               tokenId:
- *                 type: string
- *                 description: ID of the NFT token
+ *             $ref: '#/components/schemas/RegisterExistingNftRequest'
  *     responses:
  *       200:
  *         description: NFT registered as IP asset successfully
