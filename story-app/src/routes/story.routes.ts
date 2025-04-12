@@ -2,29 +2,29 @@ import { Router } from 'express';
 
 const router = Router();
 
-// 스토리 생성
+// Create Story
 router.post('/', (req, res) => {
-  res.status(201).json({ message: '스토리가 생성되었습니다.' });
+  res.status(201).json({ message: 'Story created successfully.' });
 });
 
-// 스토리 목록 조회
+// Get Story List
 router.get('/', (req, res) => {
-  res.json({ message: '스토리 목록을 조회합니다.' });
+  res.json({ message: 'Get Story List.' });
 });
 
-// 스토리 상세 조회
+// Get Story Detail
 router.get('/:id', (req, res) => {
-  res.json({ message: `ID: ${req.params.id}의 스토리를 조회합니다.` });
+  res.json({ message: `Get Story Detail: ${req.params.id}` });
 });
 
-// 스토리 수정
+// Update Story
 router.put('/:id', (req, res) => {
-  res.json({ message: `ID: ${req.params.id}의 스토리를 수정합니다.` });
+  res.json({ message: `Update Story: ${req.params.id}` });
 });
 
-// 스토리 삭제
+// Delete Story
 router.delete('/:id', (req, res) => {
-  res.json({ message: `ID: ${req.params.id}의 스토리를 삭제합니다.` });
+  res.json({ message: `Delete Story: ${req.params.id}` });
 });
 
 export { router as storyRouter }; 
