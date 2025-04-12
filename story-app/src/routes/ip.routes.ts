@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { IpController } from '../controllers/ip.controller';
 import { validateRequest } from '../middlewares/error.middleware';
-import { registerIpSchema, registerExistingNftSchema } from '../middlewares/validation.middleware';
+import { registerIpSchema, registerExistingNftSchema, ipIdSchema } from '../middlewares/validation.middleware';
 
 // IP 컨트롤러 인스턴스 생성
 const ipController = new IpController();
@@ -20,5 +20,12 @@ router.post('/register', validateRequest(registerIpSchema), ipController.registe
  * @access Public
  */
 router.post('/register-existing-nft', validateRequest(registerExistingNftSchema), ipController.registerExistingNft);
+
+/**
+ * @route GET /api/v1/ip/:ipId
+ * @desc IP 자산 상세 정보 조회 엔드포인트
+ * @access Public
+ */
+router.get('/:ipId', validateRequest(ipIdSchema), ipController.getStoryDetail);
 
 export { router as ipRouter };
