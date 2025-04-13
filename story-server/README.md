@@ -22,7 +22,7 @@ This repository contains a backend API server built with Express.js and TypeScri
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/story-hack.git
+git clone https://github.com/ddevkim/buidl-placeholder.git
 cd story-server
 ```
 

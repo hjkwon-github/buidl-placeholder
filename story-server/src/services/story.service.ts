@@ -10,7 +10,6 @@ import {
   IpRegistrationResult,
   MintAndRegisterIpParams,
 } from '../types/story.types';
-import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 
 dotenv.config();

@@ -7,12 +7,18 @@
     "start": "node dist/index.js",
     "dev": "nodemon --watch src --ext ts --exec ts-node src/index.ts",
     "build": "tsc",
+    "deploy": "npm run build && vercel --prod",
     "test:ipfs": "ts-node src/tests/ipfs-upload.test.ts",
-    "test:ip": "ts-node src/tests/ip.test.ts",
-    "test:story-detail": "ts-node src/tests/story-detail.test.ts"
+    "test:ip": "ts-node src/tests/ip.test.ts"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "story",
+    "protocol",
+    "story-protocol",
+    "story-server",
+    "story-server-api"
+  ],
+  "author": "ddevkim@gmail.com",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
@@ -35,6 +41,7 @@
     "@types/swagger-ui-express": "^4.1.8",
     "nodemon": "^3.1.9",
     "prettier": "^3.5.3",
+    "rimraf": "^5.0.5",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   }

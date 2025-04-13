@@ -1,5 +1,4 @@
 import { PinataSDK } from 'pinata-web3';
-import fetch from 'node-fetch';
 import { createHash } from 'crypto';
 import { Logger } from './logger.service';
 import { StoryProtocolError } from '../types/errors';
