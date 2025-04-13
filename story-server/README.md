@@ -101,23 +101,42 @@ http://localhost:3000/api-docs
 
 This provides a UI to interact with all available API endpoints.
 
-## Live Demo and Testing
 
-A version with all environment variables configured is deployed at:
 
-```
-https://story-app-dusky.vercel.app
-```
-
-You can test the API without any local setup using curl commands:
-
-### Register a new IP asset with a file
+### Register a new IP using a remote file URL (Live Demo and Testing)
 
 ```bash
-curl -X POST -F "file=@/path/to/your/image.jpg" https://story-app-dusky.vercel.app/api/v1/ip/register
+curl -X POST https://story-server-xi.vercel.app/api/v1/ip/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "My First IP",
+    "description": "This is my first registered IP content.",
+    "fileUrl": "https://picsum.photos/200",
+    "creators": [
+      {
+        "name": "Alice",
+        "address": "0xCaa2da8aF50327B31FC5Ee19472E883D830B9c4B",
+        "contributionPercent": 100,
+        "socialMedia": [
+          {
+            "platform": "twitter",
+            "url": "https://twitter.com/alice"
+          }
+        ]
+      }
+    ],
+    "licenseTerms": {
+      "commercialUse": true,
+      "mintFee": {
+        "amount": "10",
+        "token": "USDT"
+      },
+      "royaltyPercentage": 5
+    }
+  }'
 ```
 
-Replace `/path/to/your/image.jpg` with the path to your local file.
+Try this command to see how IP registration works with a remote file URL.
 
 ## Available Endpoints
 
